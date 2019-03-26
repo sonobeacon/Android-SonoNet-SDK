@@ -20,7 +20,7 @@ implementation 'android.arch.persistence.room:runtime:1.1.1'
 
 You also need to modify your AndroidManifest file by adding following permissions:
 
-```android
+```java
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -32,7 +32,7 @@ You also need to modify your AndroidManifest file by adding following permission
 
 And following service:
 
-```android
+```java
 <service android:name="com.sonobeacon.system.sonolib.BeaconInfoService"
             android:label="BeaconService" />
 ```
@@ -49,13 +49,13 @@ E.g. Your retail store is equipped with 5 Sono beacons, thus only those 5 beacon
 Declare a SonoNet.Control instance in your Activity/Fragment. The ContentView is an UI component that controls the display of content via the SDK. Mainly, the content associated to a beacon is displayed in a web view, whereby individual functions extend and enhance the user experience.
 Don't use the ContentView if you want to handle the display of content by yourself.
 
-```android
+```java
 private SonoSystem.Control control;
 private ContentView contentView;  /* optional */
 ```
 Then set up the credentials using SonoNetCredentials and initialize SonoNet. Use the builder pattern to create the SonoNet control (locationID is optional):
 
-```android
+```java
 SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY", locationID: "YOUR_LOCATION_ID");
 // SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY");
         SonoNet.initialize(this, credentials);
@@ -73,11 +73,11 @@ Check the demo app for implementation.
 
 Use BeaconInfo callback to listen to beacon detections (implement SonoNet.BeaconInfoDelegate):
 
-```android
- @Override
-    public void onBeaconReceivedLinkPayload(WebLink webLink) {
-        Log.d("Weblink title: ", webLink.getTitle());
-    }
+```java
+@Override
+   public void onBeaconReceivedLinkPayload(WebLink webLink) {
+       Log.d("Weblink title: ", webLink.getTitle());
+   }
 ```
 
 ### Kotlin
@@ -104,8 +104,8 @@ control?.bind(this)
 BeaconInfo callback:
 
 ```kotlin
-  override fun onBeaconReceivedLinkPayload(p0: WebLink?) {
-        Log.d("", "")
+override fun onBeaconReceivedLinkPayload(p0: WebLink?) {
+      Log.d("Title", p0?.title)
     }
 
 ```

@@ -68,8 +68,8 @@ control.bind(this);
 
 Note: You need to handle and request app permissions by yourself. SonoNet can only be bound if permissions have been granted.
 SonoNet requires permission to use both microphone and localization.
-The permission to use Bluetooth is only necessary to optimize localization. The Bluetooth functionality should be activated if no Location Id is passed.
-Check the demo app for implementation.
+The permission to use Bluetooth is only necessary to optimize localization. Bluetooth functionality should be activated if no location Id is passed.
+Check out the demo app for implementation.
 
 Use BeaconInfo callback to listen to beacon detections (implement SonoNet.BeaconInfoDelegate):
 
@@ -82,7 +82,7 @@ Use BeaconInfo callback to listen to beacon detections (implement SonoNet.Beacon
 
 ### Kotlin
 
-Same applies to Kotlin implementation. Check the Kotlin demo app.
+Same applies to Kotlin implementation. Check out the Kotlin demo app.
 
 ```kotlin
 private var contentView: ContentView? = null

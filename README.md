@@ -39,26 +39,37 @@ And following service:
   
 
 We will provide you with the SDK as well as the Api key and the Location Id.
+Note: The location Id is an identifier used to determine a particular location/environment in which beacons can be detected.
+E.g. Your retail store is equipped with 5 Sono beacons, thus only those 5 beacons (which are associated to the location) are detected by the SDK. Skip adding the location Id to the SonoNetCredentials if you do not want to detect only certain Sono beacons within one environment.
 
 ## Inside your app
 
 ### Java
 
-Declare a SonoNet.Control instance in your Activity/Fragment:
+Declare a SonoNet.Control instance in your Activity/Fragment. The ContentView is an UI component that controls the display of content via the SDK. Mainly, the content associated to a beacon is displayed in a web view, whereby individual functions extend and enhance the user experience.
+Don't use the ContentView if you want to handle the display of content by yourself.
 
 ```android
 private SonoSystem.Control control;
+private ContentView contentView;  /* optional */
 ```
-Then set up the credentials using SonoNetCredentials and initialize SonoNet. Use the builder pattern to create the SonoNet control:
+Then set up the credentials using SonoNetCredentials and initialize SonoNet. Use the builder pattern to create the SonoNet control (locationID is optional):
 
 ```android
 SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY", locationID: "YOUR_LOCATION_ID");
+// SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY");
         SonoNet.initialize(this, credentials);
         control = new SonoNet.Control.Builder(this)
+                .withContentView(contentView)   /* optional */
                 .build();
                 
 control.bind(this);
 ```
+
+Note: You need to handle and request app permissions by yourself. SonoNet can only be bound if permissions have been granted.
+SonoNet requires permission to use both microphone and localization.
+The permission to use Bluetooth is only necessary to optimize localization. The Bluetooth functionality should be activated if no Location Id is passed.
+Check the demo app for implementation.
 
 Use BeaconInfo callback to listen to beacon detections (implement SonoNet.BeaconInfoDelegate):
 

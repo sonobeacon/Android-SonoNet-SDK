@@ -40,7 +40,7 @@ And following service:
 
 We will provide you with the SDK as well as the Api key and the Location Id.
 Note: The location Id is an identifier used to determine a particular location/environment in which beacons can be detected.
-E.g. Your retail store is equipped with 5 Sono beacons, thus only those 5 beacons (which are associated to the location) are detected by the SDK. Skip adding the location Id to the SonoNetCredentials, if you want to detected all Sono beacons.
+E.g. Your retail store is equipped with 5 Sono beacons, thus only those 5 beacons (which are associated to the location) are detected by the SDK. Skip adding the location Id to the SonoNetCredentials, if you do not want to detect only certain Sono beacons.
 
 ## Inside your app
 

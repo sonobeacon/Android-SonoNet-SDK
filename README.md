@@ -80,3 +80,33 @@ Use BeaconInfo callback to listen to beacon detections (implement SonoNet.Beacon
     }
 ```
 
+### Kotlin
+
+Same applies to Kotlin implementation. Check the Kotlin demo app.
+
+```kotlin
+private var contentView: ContentView? = null
+private var control: SonoNet.Control? = null  /* optional */
+```
+
+```kotlin
+contentView = findViewById(R.id.contentView)
+val credentials = SonoNetCredentials("YOUR_API_KEY", "LOCATION_ID")
+// val credentials = SonoNetCredentials("YOUR_API_KEY")
+SonoNet.initialize(this, credentials)
+control = SonoNet.Control.Builder(this)
+            .withContentView(contentView) .  /* optional */
+            .build()
+                
+control?.bind(this)
+```
+
+BeaconInfo callback:
+
+```kotlin
+  override fun onBeaconReceivedLinkPayload(p0: WebLink?) {
+        Log.d("", "")
+    }
+
+```
+

@@ -20,7 +20,6 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
 
     private static final int RECORD_PERMISSION_REQUEST_CODE = 0;
     private static final int REQUEST_ENABLE_BT = 1;
-    private static final String API_KEY = "3584cfe3-9ad3-4efa-8980-04849643dc8d";
     private SonoNet.Control control;
     private ContentView contentView;
 
@@ -30,7 +29,7 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         contentView = findViewById(R.id.contentView);
-        SonoNetCredentials credentials = new SonoNetCredentials(API_KEY);
+        SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY", "LOCATION_ID");
         SonoNet.initialize(this, credentials);
         control = new SonoNet.Control.Builder(this)
                 .withContentView(contentView)
@@ -107,7 +106,7 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
             if (grantResults.length > 1 && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 checkBluetoothAndBind();
             } else {
-                // do nothing sdo far
+                // do nothing so far
             }
         }
     }

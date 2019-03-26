@@ -20,7 +20,6 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
     companion object {
         const val RECORD_PERMISSION_REQUEST_CODE = 0
         const val REQUEST_ENABLE_BT = 1
-        const val API_KEY = "3584cfe3-9ad3-4efa-8980-04849643dc8d"
     }
 
     private var contentView: ContentView? = null
@@ -32,8 +31,8 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
         supportActionBar?.hide()
         setContentView(R.layout.activity_main)
         contentView = findViewById(R.id.contentView)
-        val credentials = SonoNetCredentials(API_KEY)
-        SonoNet.initialize(DemoApplication.applicationContext(), credentials)
+        val credentials = SonoNetCredentials("YOUR_API_KEY", "LOCATION_ID")
+        SonoNet.initialize(this, credentials)
         control = SonoNet.Control.Builder(this)
             .withContentView(contentView)
             .build()
@@ -52,7 +51,7 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
 
 
     override fun onBeaconReceivedLinkPayload(p0: WebLink?) {
-        Log.d("", "")
+        Log.d("", p0?.title)
     }
 
     private fun tryToBind() {

@@ -1,1 +1,1 @@
-include ':app', ':sonolib'
+include ':app', ':SonoNet-SDK'

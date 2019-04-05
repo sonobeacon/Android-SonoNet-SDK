@@ -50,7 +50,7 @@ Declare a SonoNet.Control instance in your Activity/Fragment. The ContentView is
 Don't use the ContentView if you want to handle the display of content by yourself.
 
 ```java
-private SonoSystem.Control control;
+private SonoNet.Control control;
 private ContentView contentView;  /* optional */
 ```
 Then set up the credentials using SonoNetCredentials and initialize SonoNet. Use the builder pattern to create the SonoNet control (locationID is optional):
@@ -85,8 +85,8 @@ Use BeaconInfo callback to listen to beacon detections (implement SonoNet.Beacon
 Same applies to Kotlin implementation. Check out the Kotlin demo app.
 
 ```kotlin
-private var contentView: ContentView? = null
-private var control: SonoNet.Control? = null  /* optional */
+private var contentView: ContentView? = null   /* optional */
+private var control: SonoNet.Control? = null  
 ```
 
 ```kotlin

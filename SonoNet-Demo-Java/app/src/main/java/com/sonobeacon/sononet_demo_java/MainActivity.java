@@ -6,9 +6,9 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 
 import com.sonobeacon.system.sonolib.ContentView;
@@ -22,7 +22,6 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
     private static final int RECORD_PERMISSION_REQUEST_CODE = 0;
     private static final int REQUEST_ENABLE_BT = 1;
     private SonoNet.Control control;
-    private ContentView contentView;
 
 
     @Override
@@ -30,7 +29,7 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        contentView = findViewById(R.id.contentView);
+        ContentView contentView = findViewById(R.id.contentView);
 
         SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID");  /* REPLACE WITH YOUR CREDENTIALS */
         SonoNet.initialize(this, credentials);

@@ -11,12 +11,20 @@ Add the SDK to the dependencies section in your build.gradle file:
 ```gradle
 implementation project(':SonoNet-SDK')
 ```
-Additionally there are three more dependencies needed in order to fully integrate the SDK, otherwise it won't run:
+
+Kotlin needs to be activated:
 
 ```gradle
+implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+```
+
+Additionally there are four more dependencies needed in order to fully integrate the SDK, otherwise it won't run:
+
+```gradle
+implementation 'com.google.android.material:material:1.0.0'
 implementation 'org.altbeacon:android-beacon-library:2.15.1'
-implementation 'android.arch.persistence.room:runtime:1.1.1'
-implementation 'com.android.support:design:28.0.0'
+implementation 'androidx.room:room-runtime:2.2.0'
+implementation 'com.google.android.gms:play-services-location:17.0.0'
 ```
 
 You also need to modify your AndroidManifest file by adding following permissions:

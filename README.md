@@ -11,23 +11,32 @@ Add the SDK to the dependencies section in your build.gradle file:
 ```gradle
 implementation project(':SonoNet-SDK')
 ```
-Additionally there are two more dependencies needed in order to fully integrate the SDK, otherwise it won't run:
+
+Kotlin needs to be activated:
 
 ```gradle
+implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+```
+
+Additionally there are four more dependencies needed in order to fully integrate the SDK, otherwise it won't run:
+
+```gradle
+implementation 'com.google.android.material:material:1.0.0'
 implementation 'org.altbeacon:android-beacon-library:2.15.1'
-implementation 'android.arch.persistence.room:runtime:1.1.1'
+implementation 'androidx.room:room-runtime:2.2.0'
+implementation 'com.google.android.gms:play-services-location:17.0.0'
 ```
 
 You also need to modify your AndroidManifest file by adding following permissions:
 
 ```java
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.BLUETOOTH" />
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 ```
 
 And following service:
@@ -50,25 +59,28 @@ Declare a SonoNet.Control instance in your Activity/Fragment. The ContentView is
 Don't use the ContentView if you want to handle the display of content by yourself.
 
 ```java
-private SonoSystem.Control control;
+private SonoNet.Control control;
 private ContentView contentView;  /* optional */
 ```
 Then set up the credentials using SonoNetCredentials and initialize SonoNet. Use the builder pattern to create the SonoNet control (locationID is optional):
 
 ```java
-SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY", locationID: "YOUR_LOCATION_ID");
-// SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY");
-        SonoNet.initialize(this, credentials);
-        control = new SonoNet.Control.Builder(this)
+contentView = findViewById(R.id.contentView);
+        
+SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID");  /* REPLACE WITH YOUR CREDENTIALS */
+SonoNet.initialize(this, credentials);
+
+control = new SonoNet.Control.Builder(this)
                 .withContentView(contentView)   /* optional */
+                .withMenu()                     /* optional - integration is only possible in conjunction with contentView */
+                .isDebugging()                  /* optional */
+                .notifyMe()                     /* optional - if you want to be notified when you enter predefined geographical regions */
                 .build();
-                
-control.bind(this);
 ```
 
 Note: You need to handle and request app permissions by yourself. SonoNet can only be bound if permissions have been granted.
 SonoNet requires permission to use both microphone and localization.
-The permission to use Bluetooth is only necessary to optimize localization. Bluetooth functionality should be activated if no location Id is passed.
+The permission to use Bluetooth is only needed for optimizing localization. Bluetooth functionality should be activated if no Location Id is assigned.
 Check out the demo app for implementation.
 
 Use BeaconInfo callback to listen to beacon detections (implement SonoNet.BeaconInfoDelegate):
@@ -85,19 +97,20 @@ Use BeaconInfo callback to listen to beacon detections (implement SonoNet.Beacon
 Same applies to Kotlin implementation. Check out the Kotlin demo app.
 
 ```kotlin
-private var contentView: ContentView? = null
-private var control: SonoNet.Control? = null  /* optional */
+private var control: SonoNet.Control? = null  
 ```
 
 ```kotlin
-contentView = findViewById(R.id.contentView)
-val credentials = SonoNetCredentials("YOUR_API_KEY", "LOCATION_ID")
-// val credentials = SonoNetCredentials("YOUR_API_KEY")
+val credentials = SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID")
 SonoNet.initialize(this, credentials)
+
 control = SonoNet.Control.Builder(this)
-            .withContentView(contentView) .  /* optional */
+            .withContentView(contentView)
+            .withMenu()
+            .isDebugging
+            .notifyMe()
             .build()
-                
+            
 control?.bind(this)
 ```
 
@@ -105,8 +118,9 @@ BeaconInfo callback:
 
 ```kotlin
 override fun onBeaconReceivedLinkPayload(p0: WebLink?) {
-      Log.d("Title", p0?.title)
+        p0?.let { 
+            Log.d("TAG", it.title)
+        }
     }
-
 ```
 

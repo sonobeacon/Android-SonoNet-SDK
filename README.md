@@ -57,19 +57,22 @@ private ContentView contentView;  /* optional */
 Then set up the credentials using SonoNetCredentials and initialize SonoNet. Use the builder pattern to create the SonoNet control (locationID is optional):
 
 ```java
-SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY", locationID: "YOUR_LOCATION_ID");
-// SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY");
+contentView = findViewById(R.id.contentView);
+        
+        SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID");  /* REPLACE WITH YOUR CREDENTIALS */
         SonoNet.initialize(this, credentials);
+
         control = new SonoNet.Control.Builder(this)
                 .withContentView(contentView)   /* optional */
+                .withMenu()                     /* optional - integration is only possible in conjunction with contentView */
+                .isDebugging()                  /* optional */
+                .notifyMe()                     /* optional - if you want to get notified once you enter defined geographical areas */
                 .build();
-                
-control.bind(this);
 ```
 
 Note: You need to handle and request app permissions by yourself. SonoNet can only be bound if permissions have been granted.
 SonoNet requires permission to use both microphone and localization.
-The permission to use Bluetooth is only necessary to optimize localization. Bluetooth functionality should be activated if no location Id is passed.
+The permission to use Bluetooth is only needed for optimizing localization. Bluetooth functionality should be activated if no Location Id is assigned.
 Check out the demo app for implementation.
 
 Use BeaconInfo callback to listen to beacon detections (implement SonoNet.BeaconInfoDelegate):

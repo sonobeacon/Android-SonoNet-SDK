@@ -6,14 +6,15 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import com.sonobeacon.system.sonolib.ContentView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.sonobeacon.system.sonolib.SonoNet
 import com.sonobeacon.system.sonolib.SonoNetCredentials
 import com.sonobeacon.system.sonolib.WebLink
+import kotlinx.android.synthetic.main.activity_main.*
+
 
 class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
 
@@ -22,7 +23,6 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
         const val REQUEST_ENABLE_BT = 1
     }
 
-    private var contentView: ContentView? = null
     private var control: SonoNet.Control? = null
 
 
@@ -30,11 +30,15 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         setContentView(R.layout.activity_main)
-        contentView = findViewById(R.id.contentView)
-        val credentials = SonoNetCredentials("YOUR_API_KEY", "LOCATION_ID")
+
+        val credentials = SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID")
         SonoNet.initialize(this, credentials)
+
         control = SonoNet.Control.Builder(this)
             .withContentView(contentView)
+            .withMenu()
+            .isDebugging
+            .notifyMe()
             .build()
     }
 
@@ -51,26 +55,33 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
 
 
     override fun onBeaconReceivedLinkPayload(p0: WebLink?) {
-        Log.d("", p0?.title)
+        p0?.let {
+            Log.d("TAG", it.title)
+        }
     }
 
     private fun tryToBind() {
         if (ContextCompat.checkSelfPermission(
                 this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
                 this,
-                Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                Manifest.permission.RECORD_AUDIO
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
 
 
             val showLocationRationale = ActivityCompat
                 .shouldShowRequestPermissionRationale(
                     this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION)
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
 
             val showAudioRationale = ActivityCompat
                 .shouldShowRequestPermissionRationale(
                     this,
-                    Manifest.permission.RECORD_AUDIO)
+                    Manifest.permission.RECORD_AUDIO
+                )
 
             // permission is not granted
             if (showAudioRationale || showLocationRationale) {
@@ -85,8 +96,12 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
                 // no explanation
                 ActivityCompat.requestPermissions(
                     this,
-                    arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.RECORD_AUDIO),
-                    0)
+                    arrayOf(
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.RECORD_AUDIO
+                    ),
+                    0
+                )
             }
         } else {
             // permission ok
@@ -95,7 +110,11 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
     }
 
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (RECORD_PERMISSION_REQUEST_CODE == requestCode) {

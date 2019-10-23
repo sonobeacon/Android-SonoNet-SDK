@@ -16,6 +16,7 @@ import com.sonobeacon.system.sonolib.SonoNet;
 import com.sonobeacon.system.sonolib.SonoNetCredentials;
 import com.sonobeacon.system.sonolib.WebLink;
 
+
 public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate {
 
     private static final int RECORD_PERMISSION_REQUEST_CODE = 0;
@@ -28,11 +29,17 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         contentView = findViewById(R.id.contentView);
-        SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY", "LOCATION_ID");  /* REPLACE WITH YOUR CREDENTIALS */
+
+        SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID");  /* REPLACE WITH YOUR CREDENTIALS */
         SonoNet.initialize(this, credentials);
+
         control = new SonoNet.Control.Builder(this)
-                .withContentView(contentView)
+                .withContentView(contentView)   /* optional */
+                .withMenu()                     /* optional - integration is only possible in conjunction with contentView */
+                .isDebugging()                  /* optional */
+                .notifyMe()                     /* optional - if you want to be notified when you enter predefined geographical regions */
                 .build();
     }
 

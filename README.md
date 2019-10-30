@@ -4,7 +4,7 @@ Minimum requirements: Android 5.0, APi Level 21
 
 ## How to use
 
-Select File -> New -> New Module... at the menu panel within your project. A window will appear where you select „Import .JAR /.AAR package“. In the following dialog you have to enter the path to the SonoNet-SDK-1.0.0.aar file.
+Select File -> New -> New Module... at the menu panel within your project. A window will appear where you select „Import .JAR /.AAR package“. In the following dialog you have to enter the path to the SonoNet-SDK-4.0.aar file.
 
 Add the SDK to the dependencies section in your build.gradle file:
 

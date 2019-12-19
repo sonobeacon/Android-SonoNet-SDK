@@ -1,6 +1,6 @@
 # Android-SonoNet-SDK
 
-Minimum requirements: Android 5.0, APi Level 21
+Minimum requirements: Android 5.0, API Level 21
 
 ## How to use
 
@@ -106,9 +106,9 @@ SonoNet.initialize(this, credentials)
 
 control = SonoNet.Control.Builder(this)
             .withContentView(contentView)
-            .withMenu()
-            .isDebugging
-            .notifyMe()
+            .withMenu(true)
+            .isDebugging(true)
+            .notifyMe(true)
             .build()
             
 control?.bind(this)

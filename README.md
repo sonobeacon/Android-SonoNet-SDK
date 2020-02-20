@@ -107,7 +107,7 @@ SonoNet.initialize(this, credentials)
 control = SonoNet.Control.Builder(this)
             .withContentView(contentView)
             .withMenu()
-            .isDebugging()
+            .isDebugging
             .notifyMe()
             .build()
             

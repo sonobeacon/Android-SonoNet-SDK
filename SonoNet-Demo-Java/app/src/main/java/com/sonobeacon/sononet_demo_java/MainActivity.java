@@ -35,7 +35,7 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
         SonoNet.initialize(this, credentials);
 
         control = new SonoNet.Control.Builder(this)
-                .withContentView(contentView)   /* optional */
+                .withContentView(contentView)       /* optional */
                 .withMenu()                     /* optional - integration is only possible in conjunction with contentView */
                 .isDebugging()                  /* optional */
                 .notifyMe()                     /* optional - if you want to be notified when you enter predefined geographical regions */

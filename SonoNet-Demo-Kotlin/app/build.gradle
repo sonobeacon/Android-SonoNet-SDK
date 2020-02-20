@@ -34,10 +34,13 @@ dependencies {
     implementation project(':SonoNet-SDK')
 
     // external Apis required
-    implementation 'com.google.android.material:material:1.0.0'
-    implementation 'org.altbeacon:android-beacon-library:2.15.1'
-    implementation 'androidx.room:room-runtime:2.2.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'org.altbeacon:android-beacon-library:2.16.4'
+    implementation 'androidx.room:room-runtime:2.2.3'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
+
+    // workaround for altbeacon library crashes
+    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
 
 }
 

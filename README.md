@@ -4,7 +4,7 @@ Minimum requirements: Android 5.0, API Level 21
 
 ## How to use
 
-Select File -> New -> New Module... at the menu panel within your project. A window will appear where you select „Import .JAR /.AAR package“. In the following dialog you have to enter the path to the SonoNet-SDK-4.0.aar file.
+Select File -> New -> New Module... at the menu panel within your project. A window will appear where you select „Import .JAR /.AAR package“. In the following dialog you have to enter the path to the SonoNet-SDK.aar file.
 
 Add the SDK to the dependencies section in your build.gradle file:
 
@@ -22,9 +22,11 @@ Additionally there are four more dependencies needed in order to fully integrate
 
 ```gradle
 implementation 'com.google.android.material:material:1.0.0'
-implementation 'org.altbeacon:android-beacon-library:2.15.1'
 implementation 'androidx.room:room-runtime:2.2.0'
 implementation 'com.google.android.gms:play-services-location:17.0.0'
+
+// workaround for altbeacon library crashes
+implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
 ```
 
 You also need to modify your AndroidManifest file by adding following permissions:

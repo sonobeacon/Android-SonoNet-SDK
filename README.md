@@ -68,6 +68,9 @@ private ContentView contentView;  /* optional */
 ```
 Then set up the credentials using SonoNetCredentials and initialize SonoNet. Use the builder pattern to create the SonoNet control (locationID is optional):
 
+
+TODO: add bluetoothOnly
+
 ```java
 contentView = findViewById(R.id.contentView);
         

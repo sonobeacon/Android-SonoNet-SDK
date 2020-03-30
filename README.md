@@ -31,6 +31,8 @@ implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
 
 You also need to modify your AndroidManifest file by adding following permissions:
 
+
+TODO: add android.permission.ACCESS_BACKGROUND_LOCATION for API Level >= 29
 ```java
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
 <uses-permission android:name="android.permission.INTERNET" />

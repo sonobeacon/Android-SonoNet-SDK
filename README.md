@@ -4,11 +4,7 @@
 - [Installation](#installation)
 - [Inside your App](#inside-your-app)
 	- [Setup](#setup)
-		- [Kotlin](#kotlin)
-		- [Java](#java)
 	- [Location Services](#location-services)
-		- [Kotlin](#kotlin)
-		- [Java](#java)
 
 ## Installation
 

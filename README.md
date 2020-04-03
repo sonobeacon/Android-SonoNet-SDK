@@ -1,8 +1,18 @@
 # Android-SonoNet-SDK
 
-Minimum requirements: Android 5.0, API Level 21
+## Table of contents
+- [Installation](#installation)
+- [Inside your App](#inside-your-app)
+	- [Setup](#setup)
+		- [Kotlin](#kotlin)
+		- [Java](#java)
+	- [Location Services](#location-services)
+		- [Kotlin](#kotlin)
+		- [Java](#java)
 
-## How to use
+## Installation
+
+Minimum requirements: Android 5.0, API Level 21
 
 Select File -> New -> New Module... at the menu panel within your project. A window will appear where you select „Import .JAR /.AAR package“. In the following dialog you have to enter the path to the SonoNet-SDK.aar file.
 
@@ -31,9 +41,7 @@ implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
 
 You also need to modify your AndroidManifest file by adding following permissions:
 
-
-TODO: add android.permission.ACCESS_BACKGROUND_LOCATION for API Level >= 29
-```java
+```gradle
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -41,13 +49,17 @@ TODO: add android.permission.ACCESS_BACKGROUND_LOCATION for API Level >= 29
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+<uses-permission android:name="android.permission.WAKE_LOCK" />
 ```
 
 And following service:
 
-```java
-<service android:name="com.sonobeacon.system.sonolib.BeaconInfoService"
-            android:label="BeaconService" />
+```gradle
+<service 
+android:name="com.sonobeacon.system.sonolib.BeaconService"
+android:enabled="true"
+/>
 ```
   
 
@@ -57,32 +69,33 @@ E.g. Your retail store is equipped with 5 Sono beacons, thus only those 5 beacon
 
 ## Inside your app
 
-### Java
+### Setup
+
+#### Kotlin
 
 Declare a SonoNet.Control instance in your Activity/Fragment. The ContentView is an UI component that controls the display of content via the SDK. Mainly, the content associated to a beacon is displayed in a web view, whereby individual functions extend and enhance the user experience.
 Don't use the ContentView if you want to handle the display of content by yourself.
 
-```java
-private SonoNet.Control control;
-private ContentView contentView;  /* optional */
+```kotlin
+private var control: SonoNet.Control? = null  
 ```
-Then set up the credentials using SonoNetCredentials and initialize SonoNet. Use the builder pattern to create the SonoNet control (locationID is optional):
 
+Then set up the credentials using SonoNetCredentials and initialize SonoNet. Use the SonoNet.Control's constructor to create the SonoNet control (locationID is optional):
 
-TODO: add bluetoothOnly
+```kotlin
+val credentials = SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID")
+SonoNet.initialize(this, credentials)
 
-```java
-contentView = findViewById(R.id.contentView);
-        
-SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID");  /* REPLACE WITH YOUR CREDENTIALS */
-SonoNet.initialize(this, credentials);
-
-control = new SonoNet.Control.Builder(this)
-                .withContentView(contentView)   /* optional */
-                .withMenu()                     /* optional - integration is only possible in conjunction with contentView */
-                .isDebugging()                  /* optional */
-                .notifyMe()                     /* optional - if you want to be notified when you enter predefined geographical regions */
-                .build();
+control = SonoNet.Control(
+			context = this,			
+            contentView = contentView,	/* optional - if you want to use the app's built-in webview to show content */
+            withMenu = true,			/* optional - integration is only possible in conjunction with contentView */
+            isDebugging = true,			/* optional - if you wish to receive detailed debugging messages */
+            notifyMe = true,			/* optional - if you want to be notified when you enter predefined geographical regions */
+            bluetoothOnly = false		/* optional - if you don't need beacon detection via microphone, defaults to false */
+            )
+            
+control?.bind(this)
 ```
 
 Note: You need to handle and request app permissions by yourself. SonoNet can only be bound if permissions have been granted.
@@ -92,6 +105,42 @@ Check out the demo app for implementation.
 
 Use BeaconInfo callback to listen to beacon detections (implement SonoNet.BeaconInfoDelegate):
 
+```kotlin
+override fun onBeaconReceivedLinkPayload(webLink: WebLink) {
+        Log.d("TAG", webLink.title)
+    }
+```
+
+#### Java
+
+Same applies to Java implementation. Check out the Java demo app.
+
+```java
+private SonoNet.Control control;
+private ContentView contentView;  /* optional */
+```
+
+When implementing the SDK in java, every parameter for SonoNet.Control must be set, you can find reasonable default values below: 
+
+```java
+contentView = findViewById(R.id.contentView);
+
+/* REPLACE WITH YOUR CREDENTIALS */
+SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID"); 
+SonoNet.Companion.initialize(this, credentials);
+
+control = new SonoNet.Control(
+				this,			/* context 		*/
+				contentView,	/* ContentView 	*/
+				true,			/* withMenu		*/
+				true,			/* isDebugging	*/
+				true,			/* notifyMe		*/
+				false			/* bluetoothOnly*/
+              );
+```
+
+BeaconInfo callback:
+
 ```java
 @Override
    public void onBeaconReceivedLinkPayload(WebLink webLink) {
@@ -99,35 +148,71 @@ Use BeaconInfo callback to listen to beacon detections (implement SonoNet.Beacon
    }
 ```
 
-### Kotlin
+### Location Services
 
-Same applies to Kotlin implementation. Check out the Kotlin demo app.
+The SDK provides the ability to send custom local push notification to the user based on the user's current position. In order to use this, the following implementations need to be made to ensure location services work even when the app is terminated. The notifications can be set up in our backend.
 
-```kotlin
-private var control: SonoNet.Control? = null  
-```
+#### Kotlin
 
-```kotlin
-val credentials = SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID")
-SonoNet.initialize(this, credentials)
+In your Application class, define the the broadcastReceiver
 
-control = SonoNet.Control.Builder(this)
-            .withContentView(contentView)
-            .withMenu()
-            .isDebugging
-            .notifyMe()
-            .build()
-            
-control?.bind(this)
-```
-
-BeaconInfo callback:
 
 ```kotlin
-override fun onBeaconReceivedLinkPayload(p0: WebLink?) {
-        p0?.let { 
-            Log.d("TAG", it.title)
+private val broadcastReceiver = object: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            context?.let {
+                SonoNet.regionEvent(it, intent)
+            }
         }
     }
 ```
+Configure the receiver, for example in your onCreate()
+```kotlin
+val filter = IntentFilter()
+filter.addAction(RegionState.ENTER.toString())
+filter.addAction(RegionState.EXIT.toString())
+filter.addAction("ble_enter")
+filter.addAction("ble_exit")
+registerReceiver(broadcastReceiver, filter)
+```
 
+To get this right, these are the correct import statements:
+```kotlin
+import android.content.BroadcastReceiver
+import android.content.Intent
+import android.content.Context
+import android.content.IntentFilter
+import com.sonobeacon.system.sonolib.RegionState
+```
+
+#### Java
+
+Java implementation very similar to kotlin's. Call configureReceiver() in onCreate or wherever applicable.
+
+Application class:
+
+```java
+   void configureReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(RegionState.ENTER.toString());
+        filter.addAction(RegionState.EXIT.toString());
+        filter.addAction("ble_enter");
+        filter.addAction("ble_exit");
+        registerReceiver(broadcastReceiver, filter);
+    }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            SonoNet.Companion.regionEvent(context, intent);
+        }
+    };
+```
+
+Imports:
+```java
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+```

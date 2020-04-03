@@ -35,8 +35,6 @@ dependencies {
 
     // external Apis required
     implementation 'com.google.android.material:material:1.1.0'
-    implementation 'androidx.room:room-runtime:2.2.4'
-    implementation 'com.google.android.gms:play-services-location:17.0.0'
 
     // workaround for altbeacon library crashes
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'

@@ -34,12 +34,13 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
         val credentials = SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID")
         SonoNet.initialize(this, credentials)
 
-        control = SonoNet.Control.Builder(this)
-            .withContentView(contentView)
-            .withMenu()
-            .isDebugging
-            .notifyMe()
-            .build()
+        control = SonoNet.Control(
+            context = this,
+            contentView = contentView,
+            withMenu = true,
+            isDebugging = true,
+            notifyMe = true,
+            bluetoothOnly = false)
     }
 
 
@@ -53,11 +54,8 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
         control?.unbind()
     }
 
-
-    override fun onBeaconReceivedLinkPayload(p0: WebLink?) {
-        p0?.let {
-            Log.d("TAG", it.title)
-        }
+    override fun onBeaconReceivedLinkPayload(webLink: WebLink) {
+        Log.d("TAG", webLink.title)
     }
 
     private fun tryToBind() {
@@ -121,7 +119,7 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
             if (grantResults.size > 1 && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 checkBluetoothAndBind()
             } else {
-                // do nothing sdo far
+                // do nothing so far
             }
         }
     }

@@ -32,14 +32,14 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
         ContentView contentView = findViewById(R.id.contentView);
 
         SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID");  /* REPLACE WITH YOUR CREDENTIALS */
-        SonoNet.initialize(this, credentials);
+        SonoNet.Companion.initialize(this, credentials);
 
-        control = new SonoNet.Control.Builder(this)
-                .withContentView(contentView)       /* optional */
-                .withMenu()                     /* optional - integration is only possible in conjunction with contentView */
-                .isDebugging()                  /* optional */
-                .notifyMe()                     /* optional - if you want to be notified when you enter predefined geographical regions */
-                .build();
+        control = new SonoNet.Control(this,
+                contentView,
+                true,
+                true,
+                true,
+                false);
     }
 
     @Override

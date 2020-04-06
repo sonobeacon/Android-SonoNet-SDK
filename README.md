@@ -84,7 +84,7 @@ SonoNet.initialize(this, credentials)
 
 control = SonoNet.Control(
 			context = this,			
-            contentView = contentView,	/* optional - if you want to use the app's built-in webview to show content */
+            contentView = contentView,		/* optional - if you want to use the app's built-in webview to show content */
             withMenu = true,			/* optional - integration is only possible in conjunction with contentView */
             isDebugging = true,			/* optional - if you wish to receive detailed debugging messages */
             notifyMe = true,			/* optional - if you want to be notified when you enter predefined geographical regions */
@@ -127,11 +127,11 @@ SonoNet.Companion.initialize(this, credentials);
 
 control = new SonoNet.Control(
 				this,			/* context 		*/
-				contentView,	/* ContentView 	*/
+				contentView,		/* ContentView 		*/
 				true,			/* withMenu		*/
-				true,			/* isDebugging	*/
+				true,			/* isDebugging		*/
 				true,			/* notifyMe		*/
-				false			/* bluetoothOnly*/
+				false			/* bluetoothOnly	*/
               );
 ```
 

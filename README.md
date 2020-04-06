@@ -49,12 +49,22 @@ You also need to modify your AndroidManifest file by adding following permission
 <uses-permission android:name="android.permission.WAKE_LOCK" />
 ```
 
-And following service:
+And following service and receiver:
 
 ```gradle
 <service 
-android:name="com.sonobeacon.system.sonolib.BeaconService"
-android:enabled="true"
+    android:name="com.sonobeacon.system.sonolib.BeaconService"
+    android:enabled="true"
+/>
+<receiver
+    android:name="com.sonobeacon.system.sonolib.GeofenceBroadcastReceiver"
+    android:enabled="true"
+    android:exported="true"
+/>
+<service
+    android:name="com.sonobeacon.system.sonolib.GeofenceTransitionsJobIntentService"
+    android:exported="true"
+    android:permission="android.permission.BIND_JOB_SERVICE"
 />
 ```
   

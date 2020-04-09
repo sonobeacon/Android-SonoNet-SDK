@@ -21,8 +21,8 @@ public class MyApplication extends Application {
         IntentFilter filter = new IntentFilter();
         filter.addAction(RegionState.ENTER.toString());
         filter.addAction(RegionState.EXIT.toString());
-        filter.addAction("ble_enter");
-        filter.addAction("ble_exit");
+        filter.addAction("BLE_ENTER");
+        filter.addAction("BLE_EXIT");
         registerReceiver(broadcastReceiver, filter);
     }
 

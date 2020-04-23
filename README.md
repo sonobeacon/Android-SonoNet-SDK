@@ -24,12 +24,14 @@ Kotlin needs to be activated:
 implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 ```
 
-Additionally there are four more dependencies needed in order to fully integrate the SDK, otherwise it won't run:
+Additionally there are a few more dependencies needed in order to fully integrate the SDK, otherwise it won't run:
 
 ```gradle
 implementation 'com.google.android.material:material:1.0.0'
 implementation 'androidx.room:room-runtime:2.2.0'
 implementation 'com.google.android.gms:play-services-location:17.0.0'
+implementation 'androidx.room:room-runtime:2.2.5'
+implementation 'androidx.room:room-ktx:2.2.5'
 
 // workaround for altbeacon library crashes
 implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
@@ -49,7 +51,7 @@ You also need to modify your AndroidManifest file by adding following permission
 <uses-permission android:name="android.permission.WAKE_LOCK" />
 ```
 
-And following service and receiver:
+And following service, receiver and provider inside <application/> tag:
 
 ```gradle
 <service 
@@ -66,6 +68,15 @@ And following service and receiver:
     android:exported="true"
     android:permission="android.permission.BIND_JOB_SERVICE"
 />
+<provider
+    android:name="androidx.core.content.FileProvider"
+    android:authorities="${applicationId}.provider"
+    android:exported="false"
+    android:grantUriPermissions="true">
+    <meta-data
+        android:name="android.support.FILE_PROVIDER_PATHS"
+        android:resource="@xml/provider_paths" />
+</provider>
 ```
   
 
@@ -94,7 +105,7 @@ SonoNet.initialize(this, credentials)
 
 control = SonoNet.Control(
 			context = this,			
-            contentView = contentView,		/* optional - if you want to use the app's built-in webview to show content */
+            contentView = contentView,	/* optional - if you want to use the app's built-in webview to show content */
             withMenu = true,			/* optional - integration is only possible in conjunction with contentView */
             isDebugging = true,			/* optional - if you wish to receive detailed debugging messages */
             notifyMe = true,			/* optional - if you want to be notified when you enter predefined geographical regions */
@@ -137,11 +148,11 @@ SonoNet.Companion.initialize(this, credentials);
 
 control = new SonoNet.Control(
 				this,			/* context 		*/
-				contentView,		/* ContentView 		*/
+				contentView,	/* ContentView 	*/
 				true,			/* withMenu		*/
-				true,			/* isDebugging		*/
+				true,			/* isDebugging	*/
 				true,			/* notifyMe		*/
-				false			/* bluetoothOnly	*/
+				false			/* bluetoothOnly*/
               );
 ```
 

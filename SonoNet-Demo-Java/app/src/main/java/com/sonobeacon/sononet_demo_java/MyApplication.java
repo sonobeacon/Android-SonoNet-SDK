@@ -29,7 +29,8 @@ public class MyApplication extends Application {
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            SonoNet.Companion.regionEvent(context, Objects.requireNonNull(intent.getAction()), Objects.requireNonNull(intent.getStringExtra(getString(R.string.reminderId))));
+            SonoNet.Companion.regionEvent(context, Objects.requireNonNull(intent.getAction()),
+                    Objects.requireNonNull(intent.getStringExtra(getString(R.string.reminderId))));
         }
     };
 

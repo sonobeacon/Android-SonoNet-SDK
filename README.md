@@ -57,7 +57,7 @@ You also need to modify your AndroidManifest file by adding following permission
 And following service, receiver and provider inside <application/> tag:
 
 ```gradle
-<service 
+<service
     android:name="com.sonobeacon.system.sonolib.BeaconService"
     android:enabled="true"
 />
@@ -81,7 +81,7 @@ And following service, receiver and provider inside <application/> tag:
         android:resource="@xml/provider_paths" />
 </provider>
 ```
-  
+
 
 We will provide you with the SDK as well as the Api key and the Location Id.
 Note: The location Id is an identifier used to determine a particular location/environment in which beacons can be detected.
@@ -97,7 +97,7 @@ Declare a SonoNet.Control instance in your Activity/Fragment. The ContentView is
 Don't use the ContentView if you want to handle the display of content by yourself.
 
 ```kotlin
-private var control: SonoNet.Control? = null  
+private var control: SonoNet.Control? = null
 ```
 
 Then set up the credentials using SonoNetCredentials and initialize SonoNet. Use the SonoNet.Control's constructor to create the SonoNet control (locationID is optional):
@@ -107,14 +107,14 @@ val credentials = SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID")
 SonoNet.initialize(this, credentials)
 
 control = SonoNet.Control(
-            context = this,			
+            context = this,
             contentView = contentView,  /* optional - if you want to use the app's built-in webview to show content */
             withMenu = true,            /* optional - integration is only possible in conjunction with contentView */
             isDebugging = true,         /* optional - if you wish to receive detailed debugging messages */
             notifyMe = true,            /* optional - if you want to be notified when you enter predefined geographical regions */
             bluetoothOnly = false       /* optional - if you don't need beacon detection via microphone, defaults to false */
             )
-            
+
 control?.bind(this)
 ```
 
@@ -140,23 +140,23 @@ private SonoNet.Control control;
 private ContentView contentView;  /* optional */
 ```
 
-When implementing the SDK in java, every parameter for SonoNet.Control must be set, you can find reasonable default values below: 
+When implementing the SDK in java, every parameter for SonoNet.Control must be set, you can find reasonable default values below:
 
 ```java
 contentView = findViewById(R.id.contentView);
 
 /* REPLACE WITH YOUR CREDENTIALS */
-SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID"); 
+SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID");
 SonoNet.Companion.initialize(this, credentials);
 
 control = new SonoNet.Control(
-				this,			/* context 		*/
-				contentView,	/* ContentView 	*/
-				true,			/* withMenu		*/
-				true,			/* isDebugging	*/
-				true,			/* notifyMe		*/
-				false			/* bluetoothOnly*/
-              );
+            this,           /* context 		*/
+            contentView,    /* ContentView 	*/
+            true,           /* withMenu		*/
+            true,           /* isDebugging	*/
+            true,           /* notifyMe		*/
+            false           /* bluetoothOnly*/
+            );
 ```
 
 BeaconInfo callback:
@@ -181,7 +181,8 @@ In your Application class, define the the broadcastReceiver
 private val broadcastReceiver = object : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         intent?.action.let {
-            SonoNet.regionEvent(context, it ?: "", intent?.getStringExtra(getString(R.string.reminderId)) ?: "")
+            SonoNet.regionEvent(context, it ?: "",
+                intent?.getStringExtra(getString(R.string.reminderId)) ?: "")
         }
     }
 }
@@ -201,19 +202,19 @@ Java implementation very similar to kotlin's. Call configureReceiver() in onCrea
 Application class:
 
 ```java
-   void configureReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(RegionState.ENTER.toString());
-        filter.addAction(RegionState.EXIT.toString());
-        filter.addAction("BLE_ENTER");
-        filter.addAction("BLE_EXIT");
-        registerReceiver(broadcastReceiver, filter);
-    }
+void configureReceiver() {
+    IntentFilter filter = new IntentFilter();
+    filter.addAction(EnterAction.ENTER.toString());
+    filter.addAction(EnterAction.EXIT.toString());
+    registerReceiver(broadcastReceiver, filter);
+}
 
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            SonoNet.Companion.regionEvent(context, intent);
-        }
-    };
+private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        SonoNet.Companion.regionEvent(context, Objects.requireNonNull(intent.getAction()),
+            Objects.requireNonNull(intent.getStringExtra(getString(R.string.reminderId))));
+    }
+};
 ```
+configureReceiver() is best called from Application's onCreate().

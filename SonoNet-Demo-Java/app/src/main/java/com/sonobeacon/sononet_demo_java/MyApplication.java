@@ -6,8 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-import com.sonobeacon.system.sonolib.EnterAction;
-import com.sonobeacon.system.sonolib.SonoNet;
+import com.sonobeacon.system.sonolib.core.EnterAction;
+import com.sonobeacon.system.sonolib.core.SonoNet;
 
 import java.util.Objects;
 

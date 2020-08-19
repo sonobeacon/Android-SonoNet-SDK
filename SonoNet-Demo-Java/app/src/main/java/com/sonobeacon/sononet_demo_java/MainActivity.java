@@ -11,10 +11,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.util.Log;
 
-import com.sonobeacon.system.sonolib.ContentView;
-import com.sonobeacon.system.sonolib.SonoNet;
-import com.sonobeacon.system.sonolib.SonoNetCredentials;
-import com.sonobeacon.system.sonolib.WebLink;
+import com.sonobeacon.system.sonolib.content.ContentView;
+import com.sonobeacon.system.sonolib.core.SonoNet;
+import com.sonobeacon.system.sonolib.core.SonoNetCredentials;
+import com.sonobeacon.system.sonolib.models.WebLink;
 
 
 public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate {
@@ -48,6 +48,8 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
         super.onStart();
         tryToBind();
     }
+
+
 
     @Override
     public void onBeaconReceivedLinkPayload(WebLink webLink) {

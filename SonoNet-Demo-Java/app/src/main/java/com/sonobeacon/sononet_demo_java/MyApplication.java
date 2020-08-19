@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-import com.sonobeacon.system.sonolib.RegionState;
+import com.sonobeacon.system.sonolib.EnterAction;
 import com.sonobeacon.system.sonolib.SonoNet;
+
+import java.util.Objects;
 
 public class MyApplication extends Application {
 
@@ -19,17 +21,15 @@ public class MyApplication extends Application {
 
     void configureReceiver() {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(RegionState.ENTER.toString());
-        filter.addAction(RegionState.EXIT.toString());
-        filter.addAction("BLE_ENTER");
-        filter.addAction("BLE_EXIT");
+        filter.addAction(EnterAction.ENTER.toString());
+        filter.addAction(EnterAction.EXIT.toString());
         registerReceiver(broadcastReceiver, filter);
     }
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            SonoNet.Companion.regionEvent(context, intent);
+            SonoNet.Companion.regionEvent(context, Objects.requireNonNull(intent.getAction()), Objects.requireNonNull(intent.getStringExtra(getString(R.string.reminderId))));
         }
     };
 

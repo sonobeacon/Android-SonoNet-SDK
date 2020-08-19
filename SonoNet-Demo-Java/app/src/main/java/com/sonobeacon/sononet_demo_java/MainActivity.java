@@ -31,6 +31,7 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
 
         ContentView contentView = findViewById(R.id.contentView);
 
+
         SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID");  /* REPLACE WITH YOUR CREDENTIALS */
         SonoNet.Companion.initialize(this, credentials);
 

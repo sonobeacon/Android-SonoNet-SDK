@@ -32,14 +32,14 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
         ContentView contentView = findViewById(R.id.contentView);
 
         SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID");  /* REPLACE WITH YOUR CREDENTIALS */
-        SonoNet.initialize(this, credentials);
+        SonoNet.Companion.initialize(this, credentials);
 
-        control = new SonoNet.Control.Builder(this)
-                .withContentView(contentView)       /* optional */
-                .withMenu()                     /* optional - integration is only possible in conjunction with contentView */
-                .isDebugging()                  /* optional */
-                .notifyMe()                     /* optional - if you want to be notified when you enter predefined geographical regions */
-                .build();
+        control = new SonoNet.Control(this,
+                contentView,
+                true,
+                true,
+                true,
+                false);
     }
 
     @Override
@@ -59,13 +59,21 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(
                 this,
-                Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        ) {
 
-
-            final boolean showLocationRationale = ActivityCompat
+            final boolean showCoarseLocationRationale = ActivityCompat
                     .shouldShowRequestPermissionRationale(
                             this,
                             Manifest.permission.ACCESS_COARSE_LOCATION);
+
+            final boolean showFineLocationRationale = ActivityCompat
+                    .shouldShowRequestPermissionRationale(
+                            this,
+                            Manifest.permission.ACCESS_FINE_LOCATION);
 
             final boolean showAudioRationale = ActivityCompat
                     .shouldShowRequestPermissionRationale(
@@ -73,12 +81,15 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
                             Manifest.permission.RECORD_AUDIO);
 
             // permission is not granted
-            if (showAudioRationale || showLocationRationale) {
+            if (showAudioRationale || showCoarseLocationRationale) {
                 String message = "";
                 if (showAudioRationale) {
                     message += getString(R.string.audioRationale);
                 }
-                if (showLocationRationale) {
+                if (showCoarseLocationRationale) {
+                    message += getString(R.string.locationRationale);
+                }
+                if (showFineLocationRationale) {
                     message += getString(R.string.locationRationale);
                 }
             } else {
@@ -87,7 +98,8 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
                         this,
                         new String[]{
                                 Manifest.permission.ACCESS_COARSE_LOCATION,
-                                Manifest.permission.RECORD_AUDIO
+                                Manifest.permission.RECORD_AUDIO,
+                                Manifest.permission.ACCESS_FINE_LOCATION
                         },
                         0);
             }

@@ -33,13 +33,13 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
         val credentials = SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID")
         SonoNet.initialize(this, credentials)
 
-        control = SonoNet.Control(this,
-            contentView,
+        control = SonoNet.Control(
+            context = this,
+            contentView = contentView,
             withMenu = true,
             isDebugging = true,
             notifyMe = true,
-            bluetoothOnly = false
-        )
+            bluetoothOnly = false)
     }
 
 
@@ -65,13 +65,23 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
             ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.RECORD_AUDIO
+            ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
 
-            val showLocationRationale = ActivityCompat
+
+            val showCoarseLocationRationale = ActivityCompat
                 .shouldShowRequestPermissionRationale(
                     this,
                     Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+
+            val showFineLocationRationale = ActivityCompat
+                .shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
                 )
 
             val showAudioRationale = ActivityCompat
@@ -81,12 +91,15 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
                 )
 
             // permission is not granted
-            if (showAudioRationale || showLocationRationale) {
+            if (showAudioRationale || showCoarseLocationRationale || showFineLocationRationale) {
                 var message = ""
                 if (showAudioRationale) {
                     message += getString(R.string.audioRationale)
                 }
-                if (showLocationRationale) {
+                if (showCoarseLocationRationale) {
+                    message += getString(R.string.locationRationale)
+                }
+                if (showFineLocationRationale) {
                     message += getString(R.string.locationRationale)
                 }
             } else {
@@ -95,7 +108,8 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
                     this,
                     arrayOf(
                         Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.RECORD_AUDIO
+                        Manifest.permission.RECORD_AUDIO,
+                        Manifest.permission.ACCESS_FINE_LOCATION
                     ),
                     0
                 )
@@ -117,7 +131,7 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
             if (grantResults.size > 1 && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 checkBluetoothAndBind()
             } else {
-                // do nothing sdo far
+                // do nothing so far
             }
         }
     }

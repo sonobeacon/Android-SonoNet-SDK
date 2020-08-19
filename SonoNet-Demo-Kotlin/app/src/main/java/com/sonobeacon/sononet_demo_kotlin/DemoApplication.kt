@@ -1,7 +1,12 @@
 package com.sonobeacon.sononet_demo_kotlin
 
 import android.app.Application
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import com.sonobeacon.system.sonolib.EnterAction
+import com.sonobeacon.system.sonolib.SonoNet
 
 class DemoApplication : Application() {
 
@@ -16,16 +21,24 @@ class DemoApplication : Application() {
             return instance!!.applicationContext
         }
     }
-/*
+
     override fun onCreate() {
         super.onCreate()
-        // initialize for any
-
-        // Use ApplicationContext.
-        // example: SharedPreferences etc...
-    //    val context: Context = com.sonobeacon.sononet_demo_kotlin.DemoApplication.applicationContext()
-    //    SonoSystem.initialize(com.sonobeacon.sononet_demo_kotlin.DemoApplication.applicationContext())
+        configureReceiver()
     }
-    */
+    private fun configureReceiver() {
+        val filter = IntentFilter()
+        filter.addAction(EnterAction.ENTER.toString())
+        filter.addAction(EnterAction.EXIT.toString())
+        registerReceiver(broadcastReceiver, filter)
+    }
+
+    private val broadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent?) {
+            intent?.action.let {
+                SonoNet.regionEvent(context, it ?: "", intent?.getStringExtra(getString(R.string.reminderId)) ?: "")
+            }
+        }
+    }
 
 }

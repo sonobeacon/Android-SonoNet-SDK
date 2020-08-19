@@ -30,16 +30,16 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         setContentView(R.layout.activity_main)
-
         val credentials = SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID")
         SonoNet.initialize(this, credentials)
 
-        control = SonoNet.Control.Builder(this)
-            .withContentView(contentView)
-            .withMenu()
-            .isDebugging
-            .notifyMe()
-            .build()
+        control = SonoNet.Control(this,
+            contentView,
+            withMenu = true,
+            isDebugging = true,
+            notifyMe = true,
+            bluetoothOnly = false
+        )
     }
 
 
@@ -54,10 +54,8 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
     }
 
 
-    override fun onBeaconReceivedLinkPayload(p0: WebLink?) {
-        p0?.let {
-            Log.d("TAG", it.title)
-        }
+    override fun onBeaconReceivedLinkPayload(webLink: WebLink) {
+            Log.d("BEACONRECEIVED", webLink.title)
     }
 
     private fun tryToBind() {
@@ -69,7 +67,6 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
                 Manifest.permission.RECORD_AUDIO
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-
 
             val showLocationRationale = ActivityCompat
                 .shouldShowRequestPermissionRationale(
@@ -109,7 +106,6 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
         }
     }
 
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -136,9 +132,7 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
             }
 
         }
-
     }
-
 
     private fun checkBluetoothAndBind() {
         val defaultAdapter = BluetoothAdapter.getDefaultAdapter()

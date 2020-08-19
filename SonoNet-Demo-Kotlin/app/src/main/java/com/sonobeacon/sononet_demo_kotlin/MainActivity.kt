@@ -10,9 +10,10 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.sonobeacon.system.sonolib.SonoNet
-import com.sonobeacon.system.sonolib.SonoNetCredentials
-import com.sonobeacon.system.sonolib.WebLink
+import com.sonobeacon.system.sonolib.core.SonoNet
+import com.sonobeacon.system.sonolib.core.SonoNetCredentials
+import com.sonobeacon.system.sonolib.models.WebLink
+import com.sonobeacon.system.sonolib.persistency.SonoDatabase_Impl
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -32,7 +33,6 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
         setContentView(R.layout.activity_main)
         val credentials = SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID")
         SonoNet.initialize(this, credentials)
-
         control = SonoNet.Control(
             context = this,
             contentView = contentView,

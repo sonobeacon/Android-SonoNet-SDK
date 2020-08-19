@@ -41,14 +41,14 @@
         </activity>
 
         <service
-                android:name="com.sonobeacon.system.sonolib.BeaconService"
+                android:name="com.sonobeacon.system.sonolib.core.BeaconService"
                 android:label="BeaconService"/>
         <receiver
-                android:name="com.sonobeacon.system.sonolib.GeofenceBroadcastReceiver"
+                android:name="com.sonobeacon.system.sonolib.location.GeofenceBroadcastReceiver"
                 android:enabled="true"
                 android:exported="true" />
         <service
-                android:name="com.sonobeacon.system.sonolib.GeofenceTransitionsJobIntentService"
+                android:name="com.sonobeacon.system.sonolib.location.GeofenceTransitionsJobIntentService"
                 android:exported="true"
                 android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>

@@ -20,7 +20,7 @@ public class MyApplication extends Application {
     void configureReceiver() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(EnterAction.ENTER.toString());
-        filter.addAction(EnterAction.ENTER.toString());
+        filter.addAction(EnterAction.EXIT.toString());
         registerReceiver(broadcastReceiver, filter);
     }
 

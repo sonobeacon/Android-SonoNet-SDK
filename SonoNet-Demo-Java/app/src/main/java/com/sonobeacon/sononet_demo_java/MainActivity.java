@@ -51,6 +51,8 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
         tryToBind();
     }
 
+
+
     @Override
     public void onBeaconReceivedLinkPayload(WebLink webLink) {
         Log.d("Weblink title: ", webLink.getTitle());

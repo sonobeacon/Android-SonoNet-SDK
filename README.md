@@ -15,7 +15,7 @@ Select File -> New -> New Module... at the menu panel within your project. A win
 Add the SDK to the dependencies section in your build.gradle file:
 
 ```gradle
-implementation project(':SonoNet-SDK')
+implementation project(':SonoNet-SDK5.0')
 ```
 
 Kotlin needs to be activated:
@@ -27,11 +27,12 @@ implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 Additionally there are a few more dependencies needed in order to fully integrate the SDK, otherwise it won't run:
 
 ```gradle
-implementation 'com.google.android.material:material:1.0.0'
-implementation 'androidx.room:room-runtime:2.2.0'
-implementation 'com.google.android.gms:play-services-location:17.0.0'
+implementation 'com.google.android.material:material:1.2.0'
 implementation 'androidx.room:room-runtime:2.2.5'
 implementation 'androidx.room:room-ktx:2.2.5'
+implementation 'com.google.android.gms:play-services-location:17.0.0'
+implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0'
+implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.0'
 
 // workaround for altbeacon library crashes
 implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
@@ -57,16 +58,16 @@ And following service, receiver and provider inside <application/> tag:
 
 ```gradle
 <service
-    android:name="com.sonobeacon.system.sonolib.BeaconService"
+    android:name="com.sonobeacon.system.sonolib.core.BeaconService"
     android:enabled="true"
 />
 <receiver
-    android:name="com.sonobeacon.system.sonolib.GeofenceBroadcastReceiver"
+    android:name="com.sonobeacon.system.sonolib.location.GeofenceBroadcastReceiver"
     android:enabled="true"
     android:exported="true"
 />
 <service
-    android:name="com.sonobeacon.system.sonolib.GeofenceTransitionsJobIntentService"
+    android:name="com.sonobeacon.system.sonolib.location.GeofenceTransitionsJobIntentService"
     android:exported="true"
     android:permission="android.permission.BIND_JOB_SERVICE"
 />
@@ -127,8 +128,8 @@ Use BeaconInfo callback to listen to beacon detections (implement SonoNet.Beacon
 
 ```kotlin
 override fun onBeaconReceivedLinkPayload(webLink: WebLink) {
-        Log.d("TAG", webLink.title)
-    }
+    Log.d("BEACONRECEIVED", webLink.title)
+}
 ```
 
 #### Java
@@ -179,31 +180,21 @@ In your Application class, define the the broadcastReceiver
 
 
 ```kotlin
-private val broadcastReceiver = object: BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            context?.let {
-                SonoNet.regionEvent(it, intent)
-            }
+private val broadcastReceiver = object : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent?) {
+        intent?.action.let {
+            SonoNet.regionEvent(context, it ?: "",
+                intent?.getStringExtra(getString(R.string.reminderId)) ?: "")
         }
     }
+}
 ```
 Configure the receiver, for example in your onCreate()
 ```kotlin
 val filter = IntentFilter()
-filter.addAction(RegionState.ENTER.toString())
-filter.addAction(RegionState.EXIT.toString())
-filter.addAction("BLE_ENTER")
-filter.addAction("BLE_EXIT")
+filter.addAction(EnterAction.ENTER.toString())
+filter.addAction(EnterAction.EXIT.toString())
 registerReceiver(broadcastReceiver, filter)
-```
-
-To get this right, these are the correct import statements:
-```kotlin
-import android.content.BroadcastReceiver
-import android.content.Intent
-import android.content.Context
-import android.content.IntentFilter
-import com.sonobeacon.system.sonolib.RegionState
 ```
 
 #### Java
@@ -213,27 +204,19 @@ Java implementation very similar to kotlin's. Call configureReceiver() in onCrea
 Application class:
 
 ```java
-   void configureReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(RegionState.ENTER.toString());
-        filter.addAction(RegionState.EXIT.toString());
-        filter.addAction("BLE_ENTER");
-        filter.addAction("BLE_EXIT");
-        registerReceiver(broadcastReceiver, filter);
+void configureReceiver() {
+    IntentFilter filter = new IntentFilter();
+    filter.addAction(EnterAction.ENTER.toString());
+    filter.addAction(EnterAction.EXIT.toString());
+    registerReceiver(broadcastReceiver, filter);
+}
+
+private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        SonoNet.Companion.regionEvent(context, Objects.requireNonNull(intent.getAction()),
+            Objects.requireNonNull(intent.getStringExtra(getString(R.string.reminderId))));
     }
-
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            SonoNet.Companion.regionEvent(context, intent);
-        }
-    };
+};
 ```
-
-Imports:
-```java
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-```
+configureReceiver() is best called from Application's onCreate().

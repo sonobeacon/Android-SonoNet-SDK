@@ -47,11 +47,9 @@
                 android:name="com.sonobeacon.system.sonolib.location.GeofenceBroadcastReceiver"
                 android:enabled="true"
                 android:exported="true" />
-
         <service
                 android:name="com.sonobeacon.system.sonolib.location.GeofenceTransitionsJobIntentService"
                 android:exported="true"
                 android:permission="android.permission.BIND_JOB_SERVICE" />
-
     </application>
 </manifest>

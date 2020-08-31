@@ -32,7 +32,6 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
         setContentView(R.layout.activity_main)
         val credentials = SonoNetCredentials("YOUR_API_KEY")
         SonoNet.initialize(this, credentials)
-
         control = SonoNet.Control(
             context = this,
             contentView = contentView,
@@ -55,8 +54,9 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
         control?.unbind()
     }
 
+
     override fun onBeaconReceivedLinkPayload(webLink: WebLink) {
-        Log.d("TAG", webLink.title)
+            Log.d("BEACONRECEIVED", webLink.title)
     }
 
     private fun tryToBind() {
@@ -121,7 +121,6 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
         }
     }
 
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -148,9 +147,7 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
             }
 
         }
-
     }
-
 
     private fun checkBluetoothAndBind() {
         val defaultAdapter = BluetoothAdapter.getDefaultAdapter()

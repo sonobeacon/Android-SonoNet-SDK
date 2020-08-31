@@ -26,7 +26,6 @@ class DemoApplication : Application() {
         super.onCreate()
         configureReceiver()
     }
-
     private fun configureReceiver() {
         val filter = IntentFilter()
         filter.addAction(EnterAction.ENTER.toString())

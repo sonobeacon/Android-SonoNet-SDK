@@ -10,9 +10,9 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.sonobeacon.system.sonolib.SonoNet
-import com.sonobeacon.system.sonolib.SonoNetCredentials
-import com.sonobeacon.system.sonolib.WebLink
+import com.sonobeacon.system.sonolib.core.SonoNet
+import com.sonobeacon.system.sonolib.models.SonoNetCredentials
+import com.sonobeacon.system.sonolib.models.WebLink
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         setContentView(R.layout.activity_main)
-        //val credentials = SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID")
+        val credentials = SonoNetCredentials("YOUR_API_KEY")
         SonoNet.initialize(this, credentials)
 
         control = SonoNet.Control(
@@ -39,7 +39,9 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
             withMenu = true,
             isDebugging = true,
             notifyMe = true,
-            bluetoothOnly = false)
+            bluetoothOnly = false,
+            showMenuEntryOnlyOnce = true
+            )
     }
 
 

@@ -6,15 +6,16 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import android.util.Log;
 
-import com.sonobeacon.system.sonolib.ContentView;
-import com.sonobeacon.system.sonolib.SonoNet;
-import com.sonobeacon.system.sonolib.SonoNetCredentials;
-import com.sonobeacon.system.sonolib.WebLink;
+import com.sonobeacon.system.sonolib.content.ContentView;
+import com.sonobeacon.system.sonolib.core.SonoNet;
+import com.sonobeacon.system.sonolib.models.SonoNetCredentials;
+import com.sonobeacon.system.sonolib.models.WebLink;
 
 
 public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate {
@@ -31,7 +32,7 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
 
         ContentView contentView = findViewById(R.id.contentView);
 
-        SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID");  /* REPLACE WITH YOUR CREDENTIALS */
+        SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY");  /* REPLACE WITH YOUR CREDENTIALS */
         SonoNet.Companion.initialize(this, credentials);
 
         control = new SonoNet.Control(this,
@@ -39,7 +40,9 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
                 true,
                 true,
                 true,
-                false);
+                false,
+                true
+        );
     }
 
     @Override

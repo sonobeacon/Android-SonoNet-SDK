@@ -5,8 +5,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import com.sonobeacon.system.sonolib.RegionState
-import com.sonobeacon.system.sonolib.SonoNet
+import com.sonobeacon.system.sonolib.core.EnterAction
+import com.sonobeacon.system.sonolib.core.SonoNet
 
 class DemoApplication : Application() {
 
@@ -29,17 +29,15 @@ class DemoApplication : Application() {
 
     private fun configureReceiver() {
         val filter = IntentFilter()
-        filter.addAction(RegionState.ENTER.toString())
-        filter.addAction(RegionState.EXIT.toString())
-        filter.addAction("BLE_ENTER")
-        filter.addAction("BLE_EXIT")
+        filter.addAction(EnterAction.ENTER.toString())
+        filter.addAction(EnterAction.EXIT.toString())
         registerReceiver(broadcastReceiver, filter)
     }
 
     private val broadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            context?.let {
-                SonoNet.regionEvent(it, intent)
+        override fun onReceive(context: Context, intent: Intent?) {
+            intent?.action.let {
+                SonoNet.regionEvent(context, it ?: "", intent?.getStringExtra(getString(R.string.reminderId)) ?: "")
             }
         }
     }

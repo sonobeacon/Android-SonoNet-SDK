@@ -1,6 +1,12 @@
 Changelog
 =====================
 
+## 5.1.0 (Sep, 2020)
+- backend moved to [admin.sonobeacon.com](https://admin.sonobeacon.com/)
+- detection of new content while content is being displayed is now possible
+	- while the user is looking at content, the SDK listens for new content in the background
+	- when new content is detected, it can be displayed by a new button
+
 ## 5.0.1 (Aug, 2020)
 - locationId deprecated, no longer needed
 - with the new configuration 'onlyShowMenuEntryOnce', the app can be set to show the menu entry to be displayed on app start either just once or every single time.

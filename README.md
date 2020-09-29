@@ -15,7 +15,7 @@ Select File -> New -> New Module... at the menu panel within your project. A win
 Add the SDK to the dependencies section in your build.gradle file:
 
 ```gradle
-implementation project(':SonoNet-SDK5.0')
+implementation project(':SonoNet-SDK-5.2.0')
 ```
 
 Kotlin needs to be activated:
@@ -27,7 +27,7 @@ implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 Additionally there are a few more dependencies needed in order to fully integrate the SDK, otherwise it won't run:
 
 ```gradle
-implementation 'com.google.android.material:material:1.2.0'
+implementation 'com.google.android.material:material:1.2.1'
 implementation 'androidx.room:room-runtime:2.2.5'
 implementation 'androidx.room:room-ktx:2.2.5'
 implementation 'com.google.android.gms:play-services-location:17.0.0'
@@ -82,7 +82,6 @@ And following service, receiver and provider inside <application/> tag:
 </provider>
 ```
 
-
 We will provide you with the SDK as well as the Api key and the Location Id.
 Note: The location Id is an identifier used to determine a particular location/environment in which beacons can be detected.
 E.g. Your retail store is equipped with 5 Sono beacons, thus only those 5 beacons (which are associated to the location) are detected by the SDK. Skip adding the location Id to the SonoNetCredentials if you do not want to detect only certain Sono beacons within one environment.
@@ -107,13 +106,15 @@ val credentials = SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID")
 SonoNet.initialize(this, credentials)
 
 control = SonoNet.Control(
-			context = this,
-            contentView = contentView,  /* optional - if you want to use the app's built-in webview to show content */
-            withMenu = true,            /* optional - integration is only possible in conjunction with contentView */
-            isDebugging = true,         /* optional - if you wish to receive detailed debugging messages */
-            notifyMe = true,            /* optional - if you want to be notified when you enter predefined geographical regions */
-            bluetoothOnly = false,      /* optional - if you don't need beacon detection via microphone, defaults to false */
-            showMenuEntryOnlyOnly = true/* optional - if the initial menu entry should only be displayed once, default: true */
+            context = this,
+            contentView = contentView,          /* optional - if you want to use the app's built-in webview to show content */
+            withMenu = true,                    /* optional - integration is only possible in conjunction with contentView */
+            isDebugging = true,                 /* optional - if you wish to receive detailed debugging messages */
+            notifyMe = true,                    /* optional - if you want to be notified when you enter predefined geographical regions */
+            bluetoothOnly = false,              /* optional - if you don't need beacon detection via microphone, defaults to false */
+            showMenuEntryOnlyOnly = true,       /* optional - if the initial menu entry should only be displayed once, default: true */
+            menuTextColorAsHexString = "000000",/* optional - specify the desired menu item text color in hex */
+            menuFontSize = 14f                  /* optional - specify the desired menu item text size in float */
             )
 
 control?.bind(this)
@@ -157,7 +158,9 @@ control = new SonoNet.Control(
                 true,           /* isDebugging              */
                 true,           /* notifyMe                 */
                 false,          /* bluetoothOnly            */
-                true            /* showMenuEntryOnlyOnce    */
+                true,           /* showMenuEntryOnlyOnce    */
+                14f,            /* menuFontSize             */
+                "000000"        /* menuTextColorAsHexString */
               );
 ```
 

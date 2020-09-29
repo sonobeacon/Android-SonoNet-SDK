@@ -41,7 +41,9 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
                 true,
                 true,
                 false,
-                true
+                true,
+                14f,
+                "000000"
         );
     }
 

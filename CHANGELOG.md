@@ -1,6 +1,10 @@
 Changelog
 =====================
 
+## 5.2.0 (Sep, 2020)
+- color and size of text in side menu can now be set when initializing the SDK
+- overall stability improvements
+
 ## 5.1.0 (Sep, 2020)
 - backend moved to [admin.sonobeacon.com](https://admin.sonobeacon.com/)
 - detection of new content while content is being displayed is now possible

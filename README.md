@@ -33,6 +33,8 @@ implementation 'androidx.room:room-ktx:2.2.5'
 implementation 'com.google.android.gms:play-services-location:17.0.0'
 implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0'
 implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.0'
+def dynamicanimation_version = '1.0.0'
+implementation "androidx.dynamicanimation:dynamicanimation:$dynamicanimation_version"
 
 // workaround for altbeacon library crashes
 implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'

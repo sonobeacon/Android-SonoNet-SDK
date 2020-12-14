@@ -9,6 +9,8 @@ import android.content.IntentFilter;
 import com.sonobeacon.system.sonolib.core.SonoNet;
 import com.sonobeacon.system.sonolib.core.EnterAction;
 
+import java.util.Objects;
+
 public class MyApplication extends Application {
 
     @Override
@@ -27,7 +29,7 @@ public class MyApplication extends Application {
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            SonoNet.Companion.regionEvent(context, intent.getAction(), intent.getStringExtra("reminder_id"));
+            SonoNet.Companion.regionEvent(context, Objects.requireNonNull(intent.getAction()), Objects.requireNonNull(intent.getStringExtra("reminder_id")));
         }
     };
 

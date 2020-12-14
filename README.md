@@ -15,7 +15,7 @@ Select File -> New -> New Module... at the menu panel within your project. A win
 Add the SDK to the dependencies section in your build.gradle file:
 
 ```gradle
-implementation project(':SonoNet-SDK-5.2.0')
+implementation project(':SonoNet-SDK-5.3.2')
 ```
 
 Kotlin needs to be activated:
@@ -38,7 +38,9 @@ implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.0'
 implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
 ```
 
-You also need to modify your AndroidManifest file by adding following permissions:
+You also need to modify your AndroidManifest file by adding the permissions below.
+
+Note: If you wish to use the SDK in *bluetooth-only* mode, permissions for audio recording are not required.
 
 ```gradle
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -78,7 +80,8 @@ And following service, receiver and provider inside <application/> tag:
     android:grantUriPermissions="true">
     <meta-data
         android:name="android.support.FILE_PROVIDER_PATHS"
-        android:resource="@xml/provider_paths" />
+        android:resource="@xml/provider_paths"
+    />
 </provider>
 ```
 
@@ -102,7 +105,8 @@ private var control: SonoNet.Control? = null
 Then set up the credentials using SonoNetCredentials and initialize SonoNet. Use the SonoNet.Control's constructor to create the SonoNet control (locationID is optional):
 
 ```kotlin
-val credentials = SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID")
+/* REPLACE WITH YOUR API KEY */
+val credentials = SonoNetCredentials("YOUR_API_KEY")
 SonoNet.initialize(this, credentials)
 
 control = SonoNet.Control(
@@ -133,6 +137,17 @@ override fun onBeaconReceivedLinkPayload(webLink: WebLink) {
 }
 ```
 
+Since SDK version 5.3.2, the SDK now checks for backend compatibility when initializing. This is done to avoid scenarios where a new backend structure could cause the SDK to malfunction or even crash. When an incompatible backend is detected, the initialize process is aborted and a the below function is invoked.
+
+```kotlin
+override fun onApiDeprecated() {
+    // get notified when the api is deprecated
+    // in this case, stop the sdk from initializing
+}
+```
+
+Should you get a call to this function, contact [SonoBeacon](mailto:info@sonobeacon.com) to get the newest SDK update to match the new backend.
+
 #### Java
 
 Same applies to Java implementation. Check out the Java demo app.
@@ -147,8 +162,8 @@ When implementing the SDK in java, every parameter for SonoNet.Control must be s
 ```java
 contentView = findViewById(R.id.contentView);
 
-/* REPLACE WITH YOUR CREDENTIALS */
-SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY", "YOUR_LOCATION_ID");
+/* REPLACE WITH YOUR API KEY */
+SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY");
 SonoNet.Companion.initialize(this, credentials);
 
 control = new SonoNet.Control(
@@ -175,7 +190,7 @@ BeaconInfo callback:
 
 ### Location Services
 
-The SDK provides the ability to send custom local push notification to the user based on the user's current position. In order to use this, the following implementations need to be made to ensure location services work even when the app is terminated. The notifications can be set up in our backend.
+The SDK provides the ability to send custom local push notification to the user based on the user's current position. In order to use this, the following implementations need to be made to ensure location services work even when the app is terminated. The notifications can be set up in our backend. If you plan on targeting Android Q (API Level 29) and up, you need to request ```ACCESS_BACKGROUND_LOCATION``` to make the notifications work even when the app is not in foreground.
 
 #### Kotlin
 
@@ -187,7 +202,7 @@ private val broadcastReceiver = object : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         intent?.action.let {
             SonoNet.regionEvent(context, it ?: "",
-                intent?.getStringExtra(getString(R.string.reminderId)) ?: "")
+                intent?.getStringExtra(getString("reminder_id")) ?: "")
         }
     }
 }
@@ -202,7 +217,7 @@ registerReceiver(broadcastReceiver, filter)
 
 #### Java
 
-Java implementation very similar to kotlin's. Call configureReceiver() in onCreate or wherever applicable.
+Java implementation is very similar to kotlin's. Call configureReceiver() in onCreate or wherever applicable.
 
 Application class:
 
@@ -218,7 +233,7 @@ private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
     @Override
     public void onReceive(Context context, Intent intent) {
         SonoNet.Companion.regionEvent(context, Objects.requireNonNull(intent.getAction()),
-            Objects.requireNonNull(intent.getStringExtra(getString(R.string.reminderId))));
+            Objects.requireNonNull(intent.getStringExtra(getString("reminder_id"))));
     }
 };
 ```

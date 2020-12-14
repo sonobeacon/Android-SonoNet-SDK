@@ -1,6 +1,12 @@
 Changelog
 =====================
 
+## 5.2.0 (Dec, 2020)
+- better storage management
+- new animations in various places, haptic feedback
+- SDK now supports displaying a map that indicates the users location based on recent beacon detections
+- overall stability improvements
+
 ## 5.2.0 (Sep, 2020)
 - color and size of text in side menu can now be set when initializing the SDK
 - overall stability improvements

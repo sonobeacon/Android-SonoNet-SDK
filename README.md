@@ -93,6 +93,14 @@ E.g. Your retail store is equipped with 5 Sono beacons, thus only those 5 beacon
 
 ### Setup
 
+##### Layout
+
+We recommend to use the ui components of the SDK only on portrait mode, as this is how its intended to be used. To restrict your app to portrait mode, do this on your Activity's onCreate(...)
+
+```kotlin
+requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_NOSENSOR
+```
+
 #### Kotlin
 
 Declare a SonoNet.Control instance in your Activity/Fragment. The ContentView is an UI component that controls the display of content via the SDK. Mainly, the content associated to a beacon is displayed in a web view, whereby individual functions extend and enhance the user experience.

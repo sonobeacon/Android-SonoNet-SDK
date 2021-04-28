@@ -1,6 +1,11 @@
 Changelog
 =====================
 
+## 5.3.3 (Apr, 2021)
+- improved ble and geofence detections
+- restructured dependencies
+
+
 ## 5.2.0 (Dec, 2020)
 - better storage management
 - new animations in various places, haptic feedback

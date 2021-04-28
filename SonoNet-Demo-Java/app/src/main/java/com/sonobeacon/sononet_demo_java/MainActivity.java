@@ -15,8 +15,8 @@ import androidx.core.content.ContextCompat;
 
 import com.sonobeacon.system.sonolib.content.ContentView;
 import com.sonobeacon.system.sonolib.core.SonoNet;
-import com.sonobeacon.system.sonolib.models.SonoNetCredentials;
-import com.sonobeacon.system.sonolib.models.WebLink;
+import com.sonobeacon.system.sonolib.domain.models.SonoNetCredentials;
+import com.sonobeacon.system.sonolib.domain.models.WebLink;
 
 public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate {
 

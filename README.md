@@ -15,7 +15,7 @@ Select File -> New -> New Module... at the menu panel within your project. A win
 Add the SDK to the dependencies section in your build.gradle file:
 
 ```gradle
-implementation project(':SonoNet-SDK-5.3.2')
+implementation project(':SonoNet-SDK-5.3.3')
 ```
 
 Kotlin needs to be activated:
@@ -27,17 +27,27 @@ implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 Additionally there are a few more dependencies needed in order to fully integrate the SDK, otherwise it won't run:
 
 ```gradle
-implementation 'com.google.android.material:material:1.2.1'
-implementation 'androidx.room:room-runtime:2.2.5'
-implementation 'androidx.room:room-ktx:2.2.5'
-implementation 'com.google.android.gms:play-services-location:17.0.0'
-implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0'
-implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.0'
-def dynamicanimation_version = '1.0.0'
-implementation "androidx.dynamicanimation:dynamicanimation:$dynamicanimation_version"
-
-// workaround for altbeacon library crashes
-implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
+    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'androidx.room:room-runtime:2.3.0'
+    implementation 'androidx.room:room-ktx:2.3.0'
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2'
+    def dynamicanimation_version = '1.0.0'
+    implementation "androidx.dynamicanimation:dynamicanimation:$dynamicanimation_version"
+    implementation 'org.altbeacon:android-beacon-library:2.16.4'
+    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
+    implementation 'androidx.room:room-runtime:2.3.0'
+    implementation 'androidx.room:room-ktx:2.3.0'
+    def lifecycle_version = "2.3.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
 ```
 
 You also need to modify your AndroidManifest file by adding the permissions below.
@@ -45,17 +55,17 @@ You also need to modify your AndroidManifest file by adding the permissions belo
 Note: If you wish to use the SDK in *bluetooth-only* mode, permissions for audio recording are not required.
 
 ```gradle
-<uses-permission android:name="android.permission.RECORD_AUDIO" />
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.BLUETOOTH" />
-<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-<uses-permission android:name="android.permission.WAKE_LOCK" />
-<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 ```
 
 And following service, receiver and provider inside <application/> tag:
@@ -66,12 +76,12 @@ And following service, receiver and provider inside <application/> tag:
     android:enabled="true"
 />
 <receiver
-    android:name="com.sonobeacon.system.sonolib.location.GeofenceBroadcastReceiver"
+    android:name="com.sonobeacon.system.sonolib.data.repositories.location.GeofenceBroadcastReceiver"
     android:enabled="true"
     android:exported="true"
 />
 <service
-    android:name="com.sonobeacon.system.sonolib.location.GeofenceTransitionsJobIntentService"
+    android:name="com.sonobeacon.system.sonolib.data.repositories.location.GeofenceTransitionsJobIntentService"
     android:exported="true"
     android:permission="android.permission.BIND_JOB_SERVICE"
 />

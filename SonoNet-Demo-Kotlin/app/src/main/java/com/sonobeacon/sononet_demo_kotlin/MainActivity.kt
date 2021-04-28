@@ -12,8 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.sonobeacon.system.sonolib.core.SonoNet
-import com.sonobeacon.system.sonolib.models.SonoNetCredentials
-import com.sonobeacon.system.sonolib.models.WebLink
+import com.sonobeacon.system.sonolib.domain.models.SonoNetCredentials
+import com.sonobeacon.system.sonolib.domain.models.WebLink
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {

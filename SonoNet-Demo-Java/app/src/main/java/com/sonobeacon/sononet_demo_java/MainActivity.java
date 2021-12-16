@@ -1,16 +1,18 @@
 package com.sonobeacon.sononet_demo_java;
 
-import android.Manifest;
-import android.app.Activity;
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.RECORD_AUDIO;
+
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
+import androidx.activity.ComponentActivity;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
 
 import com.sonobeacon.system.sonolib.content.ContentView;
@@ -18,11 +20,19 @@ import com.sonobeacon.system.sonolib.core.SonoNet;
 import com.sonobeacon.system.sonolib.domain.models.SonoNetCredentials;
 import com.sonobeacon.system.sonolib.domain.models.WebLink;
 
-public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate {
+public class MainActivity extends ComponentActivity implements SonoNet.BeaconInfoDelegate {
 
-    private static final int RECORD_PERMISSION_REQUEST_CODE = 0;
     private static final int REQUEST_ENABLE_BT = 1;
     private SonoNet.Control control;
+
+    private ActivityResultLauncher<String[]> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+                if (result.containsValue(false)) {
+                    Log.e("ERROR", "NOT ALL PERMISSIONS GRANTED");
+                } else {
+                    checkBluetoothAndBind();
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,69 +77,22 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
     }
 
     private void tryToBind() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-                        != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED ||
-                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-                        ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                                != PackageManager.PERMISSION_GRANTED)) {
-
-            final boolean showCoarseLocationRationale = ActivityCompat
-                    .shouldShowRequestPermissionRationale(
-                            this, Manifest.permission.ACCESS_COARSE_LOCATION);
-
-            final boolean showFineLocationRationale = ActivityCompat
-                    .shouldShowRequestPermissionRationale(
-                            this, Manifest.permission.ACCESS_FINE_LOCATION);
-
-            final boolean showAudioRationale = ActivityCompat
-                    .shouldShowRequestPermissionRationale(
-                            this, Manifest.permission.RECORD_AUDIO);
-
-            boolean showBackgroundLocationRationale = true;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                showBackgroundLocationRationale = ActivityCompat
-                        .shouldShowRequestPermissionRationale(
-                                this, Manifest.permission.ACCESS_BACKGROUND_LOCATION);
-            }
-
-            // permission is not granted
-            if (showAudioRationale || showCoarseLocationRationale) {
-                String message = "";
-                if (showAudioRationale) {
-                    message += getString(R.string.audioRationale);
-                }
-                if (showCoarseLocationRationale) {
-                    message += getString(R.string.locationRationale);
-                }
-                if (showFineLocationRationale) {
-                    message += getString(R.string.locationRationale);
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && showBackgroundLocationRationale) {
-                    message += getString(R.string.locationRationale);
-                }
-                // show rational here
-            } else {
-                // no explanation
-                String[] array = new String[]{
-                        Manifest.permission.RECORD_AUDIO,
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                };
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    String[] tmp = array;
-                    array = new String[4];
-                    System.arraycopy(tmp, 0, array, 0, 3);
-                    array[3] = Manifest.permission.ACCESS_BACKGROUND_LOCATION;
-                }
-                ActivityCompat.requestPermissions(this, array, 0);
-            }
-        } else {
-            // permission ok
+        if (ContextCompat.checkSelfPermission(
+                this,
+                ACCESS_COARSE_LOCATION
+        ) + ContextCompat.checkSelfPermission(
+                this,
+                ACCESS_FINE_LOCATION
+        ) + ContextCompat.checkSelfPermission(
+                this,
+                RECORD_AUDIO
+        ) == PackageManager.PERMISSION_GRANTED
+        ) {
             checkBluetoothAndBind();
+        } else {
+            requestPermissionLauncher.launch(
+                    new String[] { RECORD_AUDIO, ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION }
+            );
         }
     }
 
@@ -137,31 +100,6 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
     protected void onStop() {
         super.onStop();
         control.unbind();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (RECORD_PERMISSION_REQUEST_CODE == requestCode) {
-            if (grantResults.length > 1 && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                checkBluetoothAndBind();
-            } else {
-                // do nothing so far
-            }
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_ENABLE_BT) {
-            if (resultCode == RESULT_OK) {
-                checkBluetoothAndBind();
-            } else {
-                control.bind(this);
-            }
-        }
     }
 
     private void checkBluetoothAndBind() {

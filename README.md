@@ -10,6 +10,8 @@
 
 Minimum requirements: Android 5.0, API Level 21
 
+### Android Studio Version 4.2 and older
+
 Select File -> New -> New Module... at the menu panel within your project. A window will appear where you select „Import .JAR /.AAR package“. In the following dialog you have to enter the path to the SonoNet-SDK.aar file.
 
 Add the SDK to the dependencies section in your build.gradle file:
@@ -17,6 +19,19 @@ Add the SDK to the dependencies section in your build.gradle file:
 ```gradle
 implementation project(':SonoNet-SDK-5.3.3')
 ```
+
+### Android Studio Arctic Fox and newer
+
+Android Studio now longer supports above mentioned SDK integration. Therefore, do as follows:
+
+1. Create a folder called ```libs``` in the projects root directory (name and location can be different, but we'll choose libs and root.).
+2. reference the project in your app's build.gradle via 
+
+```gradle
+implementation files('../libs/SonoNetSDK-5.3.3.aar')
+```
+
+### Continue for both versions
 
 Kotlin needs to be activated:
 
@@ -27,25 +42,21 @@ implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 Additionally there are a few more dependencies needed in order to fully integrate the SDK, otherwise it won't run:
 
 ```gradle
-    implementation 'com.google.android.material:material:1.3.0'
+    def lifecycle_version = "2.4.0"
+    def dynamicanimation_version = '1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    implementation 'org.altbeacon:android-beacon-library:2.19.3'
+    implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.room:room-runtime:2.3.0'
     implementation 'androidx.room:room-ktx:2.3.0'
-    implementation 'com.google.android.gms:play-services-location:18.0.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2'
-    def dynamicanimation_version = '1.0.0'
+    implementation 'com.google.android.gms:play-services-location:19.0.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
     implementation "androidx.dynamicanimation:dynamicanimation:$dynamicanimation_version"
-    implementation 'org.altbeacon:android-beacon-library:2.16.4'
     implementation 'com.squareup.retrofit2:retrofit:2.6.2'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
     implementation 'com.squareup.retrofit2:converter-scalars:2.1.0'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.gms:play-services-location:18.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
-    implementation 'androidx.room:room-runtime:2.3.0'
-    implementation 'androidx.room:room-ktx:2.3.0'
-    def lifecycle_version = "2.3.0"
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
 ```

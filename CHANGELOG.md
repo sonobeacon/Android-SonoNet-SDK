@@ -1,6 +1,10 @@
 Changelog
 =====================
 
+## 5.3.3 - 1 (Dec, 2021)
+- update project settings
+- update readme to explain how to integrate sdk into newer Android Studio versions.
+
 ## 5.3.3 (Apr, 2021)
 - improved ble and geofence detections
 - restructured dependencies

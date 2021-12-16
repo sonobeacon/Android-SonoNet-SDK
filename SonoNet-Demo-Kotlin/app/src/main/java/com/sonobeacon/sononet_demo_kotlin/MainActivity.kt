@@ -1,15 +1,13 @@
 package com.sonobeacon.sononet_demo_kotlin
 
-import android.Manifest
-import android.app.Activity
+import android.Manifest.permission.*
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.sonobeacon.system.sonolib.core.SonoNet
 import com.sonobeacon.system.sonolib.domain.models.SonoNetCredentials
@@ -19,17 +17,27 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
 
     companion object {
-        const val RECORD_PERMISSION_REQUEST_CODE = 0
         const val REQUEST_ENABLE_BT = 1
     }
 
     private var control: SonoNet.Control? = null
 
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { pair: Map<String, Boolean> ->
+            if (pair.containsValue(false)) {
+                Log.e("ERROR","NOT ALL PERMISSIONS GRANTED")
+            } else {
+                checkBluetoothAndBind()
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         setContentView(R.layout.activity_main)
-        val credentials = SonoNetCredentials("YOUR_API_KEY")
+        val credentials = SonoNetCredentials("40d16ff6-c7d1-45e2-babf-8a394ad905c6")
         SonoNet.initialize(this, credentials)
         control = SonoNet.Control(
             context = this,
@@ -44,7 +52,8 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
 
     override fun onStart() {
         super.onStart()
-        tryToBind()
+//        tryToBind()
+        handlePermissions()
     }
 
     override fun onStop() {
@@ -61,107 +70,23 @@ class MainActivity : AppCompatActivity(), SonoNet.BeaconInfoDelegate {
         // in this case, stop the sdk from initializing
     }
 
-    private fun tryToBind() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED ||
-            (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-            ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) ||
-            ContextCompat.checkSelfPermission(this,
-                Manifest.permission.RECORD_AUDIO)
-            != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
-
-
-            val showCoarseLocationRationale = ActivityCompat
-                .shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-
-            val showFineLocationRationale = ActivityCompat
-                .shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-
-            val showAudioRationale = ActivityCompat
-                .shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.RECORD_AUDIO
-                )
-
-            var showbackgroundLocationRationale = true
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                showbackgroundLocationRationale = ActivityCompat
-                    .shouldShowRequestPermissionRationale(
-                        this,
-                        Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                    )
-            }
-
-            // permission is not granted
-            if (showAudioRationale || showCoarseLocationRationale || showFineLocationRationale) {
-                var message = ""
-                if (showAudioRationale) {
-                    message += getString(R.string.audioRationale)
-                }
-                if (showCoarseLocationRationale) {
-                    message += getString(R.string.locationRationale)
-                }
-                if (showFineLocationRationale) {
-                    message += getString(R.string.locationRationale)
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && showbackgroundLocationRationale) {
-                    message += getString(R.string.locationRationale)
-                }
-            } else {
-                // no explanation
-                var array = arrayOf(
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.RECORD_AUDIO,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    array += Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                }
-                ActivityCompat.requestPermissions(this, array, 0)
-            }
-        } else {
-            // permission ok
+    private fun handlePermissions() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                ACCESS_COARSE_LOCATION
+            ) + ContextCompat.checkSelfPermission(
+                this,
+                ACCESS_FINE_LOCATION
+            ) + ContextCompat.checkSelfPermission(
+                this,
+                RECORD_AUDIO
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             checkBluetoothAndBind()
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (RECORD_PERMISSION_REQUEST_CODE == requestCode) {
-            if (grantResults.size > 1 && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                checkBluetoothAndBind()
-            } else {
-                // do nothing so far
-            }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_ENABLE_BT) {
-            if (resultCode == Activity.RESULT_OK) {
-                checkBluetoothAndBind()
-            } else {
-                control?.bind(this)
-            }
-
+        } else {
+            requestPermissionLauncher.launch(
+                arrayOf(RECORD_AUDIO, ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION)
+            )
         }
     }
 

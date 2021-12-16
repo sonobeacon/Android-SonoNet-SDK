@@ -13,7 +13,6 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -23,7 +22,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -47,7 +47,6 @@
             android:name="com.sonobeacon.system.sonolib.data.repositories.location.GeofenceBroadcastReceiver"
             android:enabled="true"
             android:exported="true" />
-
         <service
             android:name="com.sonobeacon.system.sonolib.data.repositories.location.GeofenceTransitionsJobIntentService"
             android:exported="true"

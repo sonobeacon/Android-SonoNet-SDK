@@ -35,7 +35,9 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
         SonoNetCredentials credentials = new SonoNetCredentials("YOUR_API_KEY");
         SonoNet.Companion.initialize(this, credentials);
 
-        control = new SonoNet.Control(this,
+//        control = new SonoNet.Control(getApplicationContext());
+
+        control = new SonoNet.Control(getApplicationContext(),
                 contentView,
                 true,
                 true,
@@ -73,7 +75,7 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
                         != PackageManager.PERMISSION_GRANTED ||
                 (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
                         ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                != PackageManager.PERMISSION_GRANTED)) {
+                                != PackageManager.PERMISSION_GRANTED)) {
 
             final boolean showCoarseLocationRationale = ActivityCompat
                     .shouldShowRequestPermissionRationale(
@@ -109,6 +111,7 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && showBackgroundLocationRationale) {
                     message += getString(R.string.locationRationale);
                 }
+                // show rational here
             } else {
                 // no explanation
                 String[] array = new String[]{
@@ -117,6 +120,9 @@ public class MainActivity extends Activity implements SonoNet.BeaconInfoDelegate
                         Manifest.permission.ACCESS_COARSE_LOCATION
                 };
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    String[] tmp = array;
+                    array = new String[4];
+                    System.arraycopy(tmp, 0, array, 0, 3);
                     array[3] = Manifest.permission.ACCESS_BACKGROUND_LOCATION;
                 }
                 ActivityCompat.requestPermissions(this, array, 0);
